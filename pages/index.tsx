@@ -1,13 +1,22 @@
-import Link from 'next/link'
-import Layout from '../components/Layout'
+import { useState } from 'react';
+import UsernameForm from '../components/UsernameForm';
 
-const IndexPage = () => (
-  <Layout title="Home | Next.js + TypeScript Example">
-    <h1>Hello Next.js 👋</h1>
-    <p>
-      <Link href="/about">About</Link>
-    </p>
-  </Layout>
-)
+const HomePage: React.FC = () => {
+  const [username, setUsername] = useState('');
 
-export default IndexPage
+  const handleUsernameSubmit = (submittedUsername: string) => {
+    setUsername(submittedUsername);
+  };
+
+  return (
+    <div>
+      {username ? (
+        <h2>Welcome, {username}!</h2>
+      ) : (
+        <UsernameForm onSubmit={handleUsernameSubmit} />
+      )}
+    </div>
+  );
+};
+
+export default HomePage;
