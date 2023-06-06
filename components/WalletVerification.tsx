@@ -13,6 +13,7 @@ const WalletVerification: React.FC<WalletVerificationProps> = ({ onVerificationC
     setLoading(true);
 
     // Simulating API call to send OTP to the provided phone number
+    // Replace this code with your actual implementation
     setTimeout(() => {
       setLoading(false);
       // Simulating receiving OTP
@@ -22,9 +23,15 @@ const WalletVerification: React.FC<WalletVerificationProps> = ({ onVerificationC
 
   const handleVerificationSubmit = () => {
     setLoading(true);
+
+    // Simulating API call to verify the OTP and wallet public key
+    // Replace this code with your actual implementation
     setTimeout(() => {
       setLoading(false);
-      const isVerified = otp === '123456';
+      const isVerified = otp === '123456'; // Simulating successful OTP verification
+
+      // Get the wallet's public key from the Solana wallet integration
+      // Replace this code with your actual implementation
       const publicKey = 'YOUR_PUBLIC_KEY';
 
       onVerificationComplete(isVerified, publicKey);
