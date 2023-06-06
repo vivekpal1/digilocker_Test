@@ -1,62 +1,90 @@
 import { useState } from 'react';
 
-interface DigilockerVerificationProps {
-  publicKey: string;
-  digiLockerId: string;
+interface WalletVerificationProps {
+  onVerificationComplete: (isVerified: boolean, publicKey: string) => void;
 }
 
-const DigilockerVerification: React.FC<DigilockerVerificationProps> = ({ publicKey, digiLockerId }) => {
+const WalletVerification: React.FC<WalletVerificationProps> = ({ onVerificationComplete }) => {
   const [loading, setLoading] = useState(false);
-  const [verificationResult, setVerificationResult] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [otp, setOTP] = useState('');
 
-  const verifyWithDigilocker = async () => {
+  const handlePhoneNumberSubmit = () => {
     setLoading(true);
 
-    try {
-      // Implement the verification logic to check if the publicKey is associated with the digiLockerId
-      // Replace this code with your actual verification logic
-      const isVerified = await verifyPublicKeyWithDigilockerID(publicKey, digiLockerId);
-
-      if (isVerified) {
-        setVerificationResult('Verified');
-      } else {
-        setVerificationResult('Not Verified');
-      }
-    } catch (error) {
-      console.error('Error verifying with Digilocker:', error);
-      setVerificationResult('Error');
-    }
-
-    setLoading(false);
+    // Simulating API call to send OTP to the provided phone number
+    // Replace this code with your actual implementation
+    setTimeout(() => {
+      setLoading(false);
+      // Simulating receiving OTP
+      setOTP('123456');
+    }, 2000);
   };
 
-  const verifyButtonText = loading ? 'Verifying...' : 'Verify with Digilocker';
+  const handleVerificationSubmit = () => {
+    setLoading(true);
 
-  return (
-    <div>
-      <button onClick={verifyWithDigilocker} disabled={loading}>
-        {verifyButtonText}
-      </button>
-      <p>Verification Result: {verificationResult}</p>
-    </div>
-  );
+    // Simulating API call to verify the OTP and wallet public key
+    // Replace this code with your actual implementation
+    setTimeout(() => {
+      setLoading(false);
+      const isVerified = otp === '123456'; // Simulating successful OTP verification
+
+      // Get the wallet's public key from the Solana wallet integration
+      // Replace this code with your actual implementation
+      const publicKey = 'YOUR_PUBLIC_KEY';
+
+      onVerificationComplete(isVerified, publicKey);
+    }, 2000);
+  };
+
+  const renderContent = () => {
+    if (!phoneNumber) {
+      return (
+        <>
+          <h2>Connect Wallet and Verify</h2>
+          <p>Click the button below to start the verification process.</p>
+          <button onClick={() => setPhoneNumber('')} disabled={loading}>
+            Start Verification
+          </button>
+        </>
+      );
+    }
+
+    if (!otp) {
+      return (
+        <>
+          <h2>Enter Your Phone Number</h2>
+          <input
+            type="text"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            placeholder="Phone Number"
+          />
+          <button onClick={handlePhoneNumberSubmit} disabled={loading}>
+            Send OTP
+          </button>
+        </>
+      );
+    }
+
+    return (
+      <>
+        <h2>Enter OTP</h2>
+        <input
+          type="text"
+          value={otp}
+          onChange={(e) => setOTP(e.target.value)}
+          placeholder="OTP"
+        />
+        <button onClick={handleVerificationSubmit} disabled={loading}>
+          Verify
+        </button>
+      </>
+    );
+  };
+
+  return <div style={{ textAlign: 'center' }}>{renderContent()}</div>;
 };
 
-export default DigilockerVerification;
-
-async function verifyPublicKeyWithDigilockerID(publicKey: string, digiLockerId: string): Promise<boolean> {
-  // Implement the verification logic to check if the publicKey is associated with the digiLockerId
-  // Replace this code with your actual verification logic
-
-  // Simulating an async operation
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      // In this example, the verification is considered successful if the publicKey is not empty and the digiLockerId is a specific value
-      if (publicKey && digiLockerId === 'example-digilocker-id') {
-        resolve(true);
-      } else {
-        resolve(false);
-      }
-    }, 2000);
-  });
-}
+export default WalletVerification;
