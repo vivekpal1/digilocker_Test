@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import authenticateWithDigilocker from './digilockerUtils';
+import WalletVerification from './WalletVerification';
 
 interface Props {
   onSubmit: (username: string) => void;
@@ -8,38 +8,45 @@ interface Props {
 const UsernameForm: React.FC<Props> = ({ onSubmit }) => {
   const [username, setUsername] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isVerified, setVerified] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
-    const digilockerName = await authenticateWithDigilocker(
-      'your-client-id',
-      'your-client-secret',
-      'your-auth-token'
-    );
-
-    if (digilockerName && digilockerName.toLowerCase() === username.toLowerCase()) {
-      onSubmit(username);
+  const handleVerificationComplete = (verified: boolean, publicKey: string) => {
+    if (verified) {
+      setVerified(true);
     } else {
-      alert('Invalid username or DigiLocker authentication failed');
+      alert('Verification failed');
     }
 
     setLoading(false);
   };
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isVerified) {
+      onSubmit(username);
+    } else {
+      alert('Please complete the verification process');
+    }
+  };
+
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        placeholder="Enter your username"
-      />
-      <button type="submit" disabled={loading}>
-        {loading ? 'Loading...' : 'Submit'}
-      </button>
-    </form>
+    <div>
+      {isVerified ? (
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Enter your username"
+          />
+          <button type="submit" disabled={loading}>
+            {loading ? 'Loading...' : 'Submit'}
+          </button>
+        </form>
+      ) : (
+        <WalletVerification onVerificationComplete={handleVerificationComplete} />
+      )}
+    </div>
   );
 };
 
